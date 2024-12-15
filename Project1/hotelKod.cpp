@@ -1,3 +1,4 @@
+#include <iostream>
 class gosc {
 public:
     gosc();
@@ -12,3 +13,7 @@ class pokoj {
 public:
     pokoj();
 };
+
+int main() {
+    return 0;
+}
