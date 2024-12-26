@@ -1,13 +1,22 @@
-#pragma once
 #ifndef MENUGLOWNE_H
 #define MENUGLOWNE_H
 
-#include <iostream>
+#include "Klasy.h" // Do³¹czamy pe³n¹ definicjê ZarzadzanieRezerwacjami
 
 class MenuGlowne {
+private:
+    ZarzadzanieRezerwacjami& zarzadzanie; // Referencja do ZarzadzanieRezerwacjami
+
 public:
-    void wyswietlMenu(); // Wyœwietla menu g³ówne
-    void wybierzOpcje(); // Obs³uguje wybór u¿ytkownika
+    MenuGlowne(ZarzadzanieRezerwacjami& zarz); // Konstruktor
+
+    void wyswietlMenu();
+    void zalogujAdministratora();
+    void zalogujGoscia();
+    void noweOknoZakladaniaKonta();
+    void zalozKonto();
+    void wybierzPokoj(); // Deklaracja metody wybierzPokoj
+    void wybierzOpcje();
 };
 
-#endif 
+#endif // MENUGLOWNE_H
