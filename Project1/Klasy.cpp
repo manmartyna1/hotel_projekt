@@ -4,61 +4,68 @@
 
 using namespace std;
 
-// Implementacja klasy Goœæ
+// Implementacja klasy Gosc
 Gosc::Gosc(const string& imie, const string& nazwisko, const string& email)
     : imie(imie), nazwisko(nazwisko), email(email) {
 }
 
 string Gosc::getImie() const { return imie; }
 void Gosc::setImie(const string& imie) { this->imie = imie; }
-
 string Gosc::getNazwisko() const { return nazwisko; }
 void Gosc::setNazwisko(const string& nazwisko) { this->nazwisko = nazwisko; }
-
 string Gosc::getEmail() const { return email; }
 void Gosc::setEmail(const string& email) { this->email = email; }
-
 void Gosc::wyswietlDane() const {
     cout << "Gosc: " << imie << " " << nazwisko << ", Email: " << email << endl;
 }
 
-// Implementacja klasy Pokój
+// Implementacja klasy Pokoj
 Pokoj::Pokoj(int numer, const string& status) : numer(numer), status(status) {}
-
 int Pokoj::getNumer() const { return numer; }
 void Pokoj::setNumer(int numer) { this->numer = numer; }
-
 string Pokoj::getStatus() const { return status; }
 void Pokoj::setStatus(const string& status) { this->status = status; }
-
 void Pokoj::wyswietlDane() const {
     cout << "Pokoj nr: " << numer << ", Status: " << status << endl;
 }
 
-// Implementacja klasy Zarz¹dzanie Rezerwacjami
-void ZarzadzanieRezerwacjami::dodajRezerwacje(const Gosc& gosc, const Pokoj& pokoj) {
-    pokoje.push_back(pokoj);
-    goscie.push_back(gosc);
-    cout << "Dodano rezerwacje: " << gosc.getImie() << " " << gosc.getNazwisko()
-        << " - Pokoj nr: " << pokoj.getNumer() << endl;
-}
-
-void ZarzadzanieRezerwacjami::wyswietlRezerwacje() const {
-    cout << "Lista rezerwacji: " << endl;
-    for (size_t i = 0; i < goscie.size(); ++i) {
-        goscie[i].wyswietlDane();
-        pokoje[i].wyswietlDane();
+// Implementacja klasy ZarzadzanieRezerwacjami
+ZarzadzanieRezerwacjami::ZarzadzanieRezerwacjami() {
+    for (int i = 1; i <= 100; ++i) {
+        pokoje.push_back(Pokoj(i, "wolny"));
     }
 }
 
-// ======== IMPLEMENTACJA KLASY StanDostepnosci ========
-
-// Konstruktor
-StanDostepnosci::StanDostepnosci() : pokoje(100, false) {
-    // Inicjalizujemy wszystkie pokoje jako wolne (false)
+void ZarzadzanieRezerwacjami::dodajRezerwacje(int numerPokoju) {
+    for (auto& pokoj : pokoje) {
+        if (pokoj.getNumer() == numerPokoju) {
+            pokoj.setStatus("zajety");
+            return;
+        }
+    }
 }
 
-// Wczytaj dostêpnoœæ z pliku
+void ZarzadzanieRezerwacjami::odwolajRezerwacje(int numerPokoju) {
+    for (auto& pokoj : pokoje) {
+        if (pokoj.getNumer() == numerPokoju) {
+            pokoj.setStatus("wolny");
+            return;
+        }
+    }
+}
+
+bool ZarzadzanieRezerwacjami::czyPokojZajety(int numerPokoju) const {
+    for (const auto& pokoj : pokoje) {
+        if (pokoj.getNumer() == numerPokoju) {
+            return pokoj.getStatus() == "zajety";
+        }
+    }
+    return false;
+}
+
+// Implementacja klasy StanDostepnosci
+StanDostepnosci::StanDostepnosci() : pokoje(100, false) {}
+
 void StanDostepnosci::zaladujDostepnoscZPliku(const string& nazwaPliku) {
     ifstream plik(nazwaPliku);
     if (!plik.is_open()) {
@@ -77,7 +84,6 @@ void StanDostepnosci::zaladujDostepnoscZPliku(const string& nazwaPliku) {
     plik.close();
 }
 
-// Zapisz dostêpnoœæ do pliku
 void StanDostepnosci::zapiszDostepnoscDoPliku(const string& nazwaPliku) {
     ofstream plik(nazwaPliku);
     if (!plik.is_open()) {
@@ -92,16 +98,14 @@ void StanDostepnosci::zapiszDostepnoscDoPliku(const string& nazwaPliku) {
     plik.close();
 }
 
-// SprawdŸ dostêpnoœæ pokoju
 bool StanDostepnosci::sprawdzDostepnosc(int numerPokoju) const {
     if (numerPokoju < 1 || numerPokoju > 100) {
         cout << "Numer pokoju " << numerPokoju << " jest nieprawidlowy!" << endl;
         return false;
     }
-    return !pokoje[numerPokoju - 1];  // Zwracamy true, jeœli pokój jest wolny (false = wolny)
+    return !pokoje[numerPokoju - 1];
 }
 
-// Oznacz pokój jako zajêty/wolny
 void StanDostepnosci::oznaczPokoj(int numerPokoju, bool zajety) {
     if (numerPokoju < 1 || numerPokoju > 100) {
         cout << "Numer pokoju " << numerPokoju << " jest nieprawidlowy!" << endl;
@@ -110,7 +114,6 @@ void StanDostepnosci::oznaczPokoj(int numerPokoju, bool zajety) {
     pokoje[numerPokoju - 1] = zajety;
 }
 
-// Wyœwietl typy pokoi
 void StanDostepnosci::wyswietlInformacje() const {
     cout << "========== INFORMACJE O TYPACH POKOI ==========" << endl;
     cout << "Pokoje 1-15: Standard jednoosobowy" << endl;
