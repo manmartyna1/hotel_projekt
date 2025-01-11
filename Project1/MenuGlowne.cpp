@@ -1,4 +1,3 @@
-// Poprawiony kod pliku MenuGlowne.cpp
 #include "MenuGlowne.h"
 #include "Klasy.h"
 #include <iostream>
@@ -8,10 +7,8 @@
 
 using namespace std;
 
-// Konstruktor klasy MenuGlowne
 MenuGlowne::MenuGlowne(ZarzadzanieRezerwacjami& zarz, StanDostepnosci& stan) : zarzadzanie(zarz), stanDostepnosci(stan) {}
 
-// Wyœwietlenie ekranu pocz¹tkowego
 void MenuGlowne::wyswietlEkranPoczatkowy() {
     cout << "=================================" << endl;
     cout << "          Witamy w Hotelu        " << endl;
@@ -31,7 +28,6 @@ void MenuGlowne::wyswietlEkranPoczatkowy() {
     cout << "Przechodzenie do menu glownego..." << endl;
 }
 
-// Wyœwietlenie menu g³ównego
 void MenuGlowne::wyswietlMenu() {
     cout << "========== MENU GLOWNE ==========" << endl;
     cout << "1. Zaloguj sie jako administrator" << endl;
@@ -40,7 +36,6 @@ void MenuGlowne::wyswietlMenu() {
     cout << "4. Wyjscie" << endl;
 }
 
-// Implementacja logowania jako administrator
 void MenuGlowne::zalogujAdministratora() {
     string haslo;
     cout << "Podaj haslo administratora: ";
@@ -53,9 +48,8 @@ void MenuGlowne::zalogujAdministratora() {
     }
 }
 
-// Implementacja logowania jako gosc
 void MenuGlowne::zalogujGoscia() {
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Czyszczenie bufora
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string email, haslo;
 
     cout << "========== LOGOWANIE ==========" << endl;
@@ -64,7 +58,7 @@ void MenuGlowne::zalogujGoscia() {
     cout << "Podaj haslo: ";
     getline(cin, haslo);
 
-    string sciezka = "uzytkownicy.txt";
+    string sciezka = "daneuzytkownicy.txt";
     ifstream plik(sciezka);
     if (!plik.is_open()) {
         cout << "Blad: Nie mozna otworzyc pliku " << sciezka << endl;
@@ -83,7 +77,7 @@ void MenuGlowne::zalogujGoscia() {
             if (email == zapisanyEmail && haslo == zapisaneHaslo) {
                 cout << "Zalogowano jako " << email << "." << endl;
                 zalogowano = true;
-                menuGoscia(); // Przejœcie do menu goœcia
+                menuGoscia();
                 return;
             }
         }
@@ -95,7 +89,6 @@ void MenuGlowne::zalogujGoscia() {
     }
 }
 
-// Menu goœcia
 void MenuGlowne::menuGoscia() {
     int wybor;
 
@@ -103,8 +96,7 @@ void MenuGlowne::menuGoscia() {
         cout << "========== MENU GOSCIA ==========" << endl;
         cout << "1. Zloz rezerwacje" << endl;
         cout << "2. Odwolaj rezerwacje" << endl;
-        cout << "3. Sprawdz dostepne pokoje" << endl;
-        cout << "4. Powrot do menu glownego" << endl;
+        cout << "3. Powrot do menu glownego" << endl;
         cout << "=================================" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
@@ -117,33 +109,73 @@ void MenuGlowne::menuGoscia() {
             odwolajRezerwacje();
             break;
         case 3:
-            stanDostepnosci.wyswietlInformacje();
-            break;
-        case 4:
             cout << "Powrot do menu glownego..." << endl;
             break;
         default:
             cout << "Nieprawidlowa opcja. Sprobuj ponownie." << endl;
         }
-    } while (wybor != 4);
+    } while (wybor != 3);
 }
 
-// Z³o¿enie rezerwacji
 void MenuGlowne::zlozRezerwacje() {
-    int numerPokoju;
-    cout << "Podaj numer pokoju, ktory chcesz zarezerwowac: ";
-    cin >> numerPokoju;
+    int wybor;
+    do {
+        cout << "========== REZERWACJA ==========" << endl;
+        cout << "1. Sprawdz dostepne pokoje" << endl;
+        cout << "2. Dokonaj rezerwacji" << endl;
+        cout << "3. Wroc" << endl;
+        cout << "=================================" << endl;
+        cout << "Wybierz opcje: ";
+        cin >> wybor;
 
-    if (stanDostepnosci.sprawdzDostepnosc(numerPokoju)) {
-        stanDostepnosci.oznaczPokoj(numerPokoju, true);
-        cout << "Zarezerwowano pokoj nr " << numerPokoju << "." << endl;
-    }
-    else {
-        cout << "Pokoj nr " << numerPokoju << " jest zajety lub nie istnieje." << endl;
-    }
+        switch (wybor) {
+        case 1: {
+            stanDostepnosci.wyswietlInformacje();
+
+            ifstream plik("zarezerwowane_pokoje.txt");
+            if (plik.is_open()) {
+                cout << "Oto pokoje, ktore sa juz zajete:" << endl;
+                string linia;
+                while (getline(plik, linia)) {
+                    if (!linia.empty()) {
+                        cout << "Pokoj nr " << linia << endl;
+                    }
+                }
+                plik.close();
+            }
+            else {
+                cout << "Brak danych o zajetych pokojach." << endl;
+            }
+            break;
+        }
+        case 2: {
+            int numerPokoju;
+            cout << "Podaj numer pokoju, ktory chcesz zarezerwowac: ";
+            cin >> numerPokoju;
+
+            if (stanDostepnosci.sprawdzDostepnosc(numerPokoju)) {
+                stanDostepnosci.oznaczPokoj(numerPokoju, true);
+                ofstream plik("zarezerwowane_pokoje.txt", ios::app);
+                if (plik.is_open()) {
+                    plik << numerPokoju << endl;
+                    plik.close();
+                }
+                cout << "Zarezerwowano pokoj nr " << numerPokoju << "." << endl;
+            }
+            else {
+                cout << "Pokoj nr " << numerPokoju << " jest zajety lub nie istnieje." << endl;
+            }
+            break;
+        }
+        case 3:
+            cout << "Powrot do menu..." << endl;
+            break;
+        default:
+            cout << "Nieprawidlowa opcja. Sprobuj ponownie." << endl;
+        }
+    } while (wybor != 3);
 }
 
-// Odwo³anie rezerwacji
 void MenuGlowne::odwolajRezerwacje() {
     int numerPokoju;
     cout << "Podaj numer pokoju, ktorego rezerwacje chcesz odwolac: ";
@@ -151,6 +183,7 @@ void MenuGlowne::odwolajRezerwacje() {
 
     if (!stanDostepnosci.sprawdzDostepnosc(numerPokoju)) {
         stanDostepnosci.oznaczPokoj(numerPokoju, false);
+        stanDostepnosci.zapiszDostepnoscDoPliku("zarezerwowane_pokoje.txt");
         cout << "Rezerwacja pokoju nr " << numerPokoju << " zostala odwolana." << endl;
     }
     else {
@@ -158,7 +191,6 @@ void MenuGlowne::odwolajRezerwacje() {
     }
 }
 
-// Nowe okno do zak³adania konta
 void MenuGlowne::noweOknoZakladaniaKonta() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string imie, nazwisko, email, haslo;
@@ -173,7 +205,7 @@ void MenuGlowne::noweOknoZakladaniaKonta() {
     cout << "Podaj haslo: ";
     getline(cin, haslo);
 
-    string sciezka = "uzytkownicy.txt";
+    string sciezka = "daneuzytkownicy.txt";
     ofstream plik(sciezka, ios::app);
     if (!plik.is_open()) {
         cout << "Blad: Nie mozna otworzyc pliku " << sciezka << " do zapisu." << endl;
@@ -185,12 +217,10 @@ void MenuGlowne::noweOknoZakladaniaKonta() {
     cout << "Konto zostalo zalozone dla uzytkownika: " << imie << " " << nazwisko << endl;
 }
 
-// Opcja za³o¿enia konta
 void MenuGlowne::zalozKonto() {
     noweOknoZakladaniaKonta();
 }
 
-// Wybranie opcji
 void MenuGlowne::wybierzOpcje() {
     int wybor;
     wyswietlEkranPoczatkowy();
