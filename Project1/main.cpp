@@ -1,12 +1,12 @@
-// Poprawiony kod pliku main.cpp
 #include "MenuGlowne.h"
 #include "Klasy.h"
 
 int main() {
     ZarzadzanieRezerwacjami zarzadzanie;
-    StanDostepnosci stanDostepnosci;
-    MenuGlowne menu(zarzadzanie, stanDostepnosci);
+    StanDostepnosci stan;
 
+    MenuGlowne menu(zarzadzanie, stan);
     menu.wybierzOpcje();
+
     return 0;
 }

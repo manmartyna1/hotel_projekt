@@ -2,22 +2,27 @@
 #define MENUGLOWNE_H
 
 #include "Klasy.h"
+#include <string>
 
 class MenuGlowne {
 private:
-    ZarzadzanieRezerwacjami& zarzadzanie; // Referencja do ZarzadzanieRezerwacjami
-    StanDostepnosci& stanDostepnosci; // Referencja do StanDostepnosci
+    ZarzadzanieRezerwacjami& zarzadzanie;
+    StanDostepnosci& stanDostepnosci;
+
+    std::string ukryjHaslo();
+    bool czyPokojZajety(int numerPokoju, const std::string& dataPrzyjazdu, const std::string& dataOdjazdu);
 
 public:
-    MenuGlowne(ZarzadzanieRezerwacjami& zarz, StanDostepnosci& stan); // Konstruktor
+    MenuGlowne(ZarzadzanieRezerwacjami& zarz, StanDostepnosci& stan);
 
-    void wyswietlEkranPoczatkowy(); // Nowa funkcja do ekranu powitalnego
+    void wyswietlEkranPoczatkowy();
     void wyswietlMenu();
     void zalogujAdministratora();
     void zalogujGoscia();
     void noweOknoZakladaniaKonta();
     void zalozKonto();
     void zlozRezerwacje();
+    void sprawdzDostepnosc();
     void odwolajRezerwacje();
     void menuGoscia();
     void wybierzOpcje();
