@@ -17,17 +17,16 @@ public:
 
     void wyswietlEkranPoczatkowy();
     void wyswietlMenu();
-    void wyswietlMenuAdministratora();
     void zalogujAdministratora();
     void zalogujGoscia();
     void noweOknoZakladaniaKonta();
     void zalozKonto();
     void zlozRezerwacje();
     void sprawdzDostepnosc();
-    void zmienStatusPokoju();
     void odwolajRezerwacje();
     void menuGoscia();
     void wybierzOpcje();
+    void dokonajPlatnosci(); // New Declaration
 };
 
 #endif // MENUGLOWNE_H
