@@ -14,7 +14,8 @@ public:
 
 class ZarzadzanieRezerwacjami {
 public:
-    void dodajRezerwacje(int numerPokoju);
+    void wyswietlRezerwacje();
+    void zmienStatusPokoju(int numerPokoju, const std::string& nowyStatus);
 };
 
 class StanDostepnosci {

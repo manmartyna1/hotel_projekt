@@ -39,12 +39,37 @@ void MenuGlowne::wyswietlMenu() {
     cout << "4. Wyjscie" << endl;
 }
 
+void MenuGlowne::wyswietlMenuAdministratora() {
+    cout << "========== MENU ADMINISTRATORA ==========" << endl;
+    cout << "1. Wyswietl liste pokoi" << endl;
+    cout << "2. Zmien status pokoju" << endl;
+    cout << "3. Powrot do menu glownego" << endl;
+}
+
 void MenuGlowne::zalogujAdministratora() {
     string haslo;
     cout << "Podaj haslo administratora: ";
     haslo = ukryjHaslo();
     if (haslo == "admin123") {
-        cout << "Zalogowano jako administrator." << endl;
+        int wybor;
+        do {
+            wyswietlMenuAdministratora();
+            cout << "Wybierz opcje: ";
+            cin >> wybor;
+
+            switch (wybor) {
+            case 1:
+                zarzadzanie.wyswietlRezerwacje(); // Wyœwietlenie listy pokoi
+                break;
+            case 2:
+                zmienStatusPokoju(); // Zmiana statusu pokoju
+                break;
+            case 3:
+                return; // Powrót do menu g³ównego
+            default:
+                cout << "Nieprawidlowa opcja. Sprobuj ponownie." << endl;
+            }
+        } while (true);
     }
     else {
         cout << "Niepoprawne haslo!" << endl;
@@ -199,6 +224,21 @@ bool MenuGlowne::czyPokojZajety(int numerPokoju, const string& dataPrzyjazdu, co
     return false; // Pokój jest wolny
 }
 
+void MenuGlowne::zmienStatusPokoju() {
+    int numerPokoju;
+    string nowyStatus;
+
+    cout << "Podaj numer pokoju, ktorego status chcesz zmienic: ";
+    cin >> numerPokoju;
+    cin.ignore();
+
+    cout << "Podaj nowy status pokoju (np. 'dostêpny', 'zarezerwowany', 'w konserwacji'): ";
+    getline(cin, nowyStatus);
+
+    // U¿yj metody klasy ZarzadzanieRezerwacjami do zmiany statusu
+    zarzadzanie.zmienStatusPokoju(numerPokoju, nowyStatus);
+    cout << "Status pokoju nr " << numerPokoju << " zosta³ zmieniony na '" << nowyStatus << "'." << endl;
+}
 
 void MenuGlowne::odwolajRezerwacje() {
     int numerPokoju;
